@@ -1,0 +1,27 @@
+{
+  "skill_name": "funnel-analysis",
+  "notes": "Тесты не запускают реальные SQLite-запросы — в промптах даны mock-данные. Проверяется процесс (валидация design, расчёт conversion, segments, event volume), формат output (E/H/R), интеграция с funnel_analyzer.py.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "fitflow-onboarding-funnel-base",
+      "prompt": "Сделай funnel-analysis для FitFlow, воронка 'onboarding' за 30 дней. Реальная база недоступна, используй mock-данные ниже. Шаги: registration → onboarding_step_1_profile → onboarding_step_2_goals → onboarding_complete. Time window: 7d.\n\nMock-данные:\n\nФаза 2 (funnel counts):\n- registration: 3 000 пользователей\n- onboarding_step_1_profile: 3 000 (100.0% step conv, 100.0% overall)\n- onboarding_step_2_goals: 2 120 (70.7% step conv, 70.7% overall)\n- onboarding_complete: 1 785 (84.2% step conv, 59.5% overall)\n\nTime-to-convert (медианы):\n- registration → step_1: 5 мин\n- step_1 → step_2: 2 мин\n- step_2 → onboarding_complete: 1.5 мин\n\nФаза 4 (сегменты по persona):\n- weight_loss: 900 / 900 / 680 / 590 → overall 65.6%\n- muscle_gain: 750 / 750 / 540 / 460 → overall 61.3%\n- general_fitness: 620 / 620 / 420 / 340 → overall 54.8%\n- <unknown>: 730 / 730 / 480 / 395 → overall 54.1%\n\nФаза 5 (event volume — weekly trend, 8 недель):\nВсе шаги стабильны (±5% week-over-week), без аномалий.\n\nСоздай research-артефакт в researches/funnel-onboarding-2026-Q2/ со всеми файлами (README, findings, REPORT, sql/). Можешь использовать funnel_analyzer.py из скилла для верификации цифр.",
+      "expected_output": "research-артефакт с funnel-таблицей, biggest drop-off identified по impact_score, segment breakdown по persona, time-to-convert, event volume check ('стабилен'), 2-3 drop-off insight в E/H/R.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "fitflow-trial-to-paid-with-volume-anomaly",
+      "prompt": "Funnel для FitFlow: 'trial to paid' за 30 дней. Time window: 14d. Шаги: onboarding_complete → subscription_started → trial_started → subscription_paid.\n\nMock-данные:\n\nФаза 2:\n- onboarding_complete: 1 785\n- subscription_started: 1 200 (67.2% step, 67.2% overall)\n- trial_started: 980 (81.7% step, 54.9% overall)\n- subscription_paid: 420 (42.9% step, 23.5% overall)\n\nTime-to-convert:\n- onboarding_complete → subscription_started: 15 мин\n- subscription_started → trial_started: 3 мин\n- trial_started → subscription_paid: 8 дней (P95 — 13 дней, хвост)\n\nФаза 4 (сегменты по persona + platform):\n- weight_loss / ios: 450 / 310 / 260 / 140 → overall 31.1%\n- weight_loss / android: 140 / 90 / 70 / 28 → overall 20.0%\n- muscle_gain / ios: 380 / 260 / 220 / 100 → overall 26.3%\n- general_fitness / ios: 300 / 195 / 160 / 60 → overall 20.0%\n- <unknown>: 515 / 345 / 270 / 92 → overall 17.9%\n\nФаза 5 (event volume — 8 недель weekly):\nИНТЕРЕСНО: на шаге 'subscription_paid' за последние 2 недели event count упал на 35% week-over-week. Это аномалия! Остальные шаги стабильны.\n\nСоздай research-артефакт в researches/funnel-trial-to-paid-2026-Q2/. В отчёте обязательно отметь, что drop-off на subscription_paid может быть артефактом инструментирования, а не реальной проблемой.",
+      "expected_output": "research-артефакт + явное помечание volume anomaly с '⚠️ возможно инструментирование'.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fitflow-workout-completion-cold",
+      "prompt": "Сделай funnel-analysis для FitFlow: воронка 'workout completion'. Я не знаю точный дизайн воронки — определи сам, обоснуй выбор шагов и time window в findings.md.\n\nДоступные события:\n- workout_started\n- workout_set_completed\n- workout_paused\n- workout_resumed\n- workout_completed\n- workout_abandoned\n- achievement_unlocked\n- workout_rated\n\nMock-данные для воронки (разумный выбор):\nФаза 2 (4-шаговая воронка):\n- Step 1 (workout_started): 92 948\n- Step 2 (workout_set_completed): 75 000 (80.7% step, 80.7% overall)\n- Step 3 (workout_completed): 48 000 (64.0% step, 51.6% overall)\n- Step 4 (workout_rated): 12 000 (25.0% step, 12.9% overall)\n\nФаза 4 (сегменты по persona):\n- weight_loss: 27000 / 22000 / 15000 / 4200 → overall 15.6%\n- muscle_gain: 25000 / 21000 / 14500 / 3800 → overall 15.2%\n- general_fitness: 40948 / 32000 / 18500 / 4000 → overall 9.8%\n\nФаза 5: event volume стабилен.\n\nСоздай research-артефакт в researches/funnel-workout-completion-2026-Q2/. Объясни (а) почему выбрал эти шаги, (б) почему workout_abandoned НЕ включён как шаг воронки, (в) time window с обоснованием, (г) проверь дизайн на 4 принципа.",
+      "expected_output": "research-артефакт + явное обоснование выбора шагов воронки + check на 4 принципа дизайна + time window с обоснованием.",
+      "files": []
+    }
+  ]
+}
