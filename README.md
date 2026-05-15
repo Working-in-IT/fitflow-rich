@@ -2,6 +2,10 @@
 
 **Богатый контекст** для FitFlow — вымышленного мобильного фитнес-приложения. Это репо используется как **A/B-контраст** к [Working-in-IT/fitflow-bare](https://github.com/Working-in-IT/fitflow-bare) в вебинаре [Podlodka ProductCrew](https://podlodka.io/productcrew) «Агентная аналитика для продактов».
 
+## 🚀 Идёшь на воркшоп?
+
+Чтобы работать руками во время эфира — пройди [**SETUP.md**](SETUP.md) **за день до воркшопа**. Там пошаговая инструкция: Python, git, VS Code, Claude Code, доступ к Claude и smoke test. Время на подготовку — 30–45 минут с нуля.
+
 ## Что внутри
 
 ```
