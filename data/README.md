@@ -4,7 +4,7 @@
 
 SQLite-база `fitflow.db` содержит две таблицы для аналитики FitFlow:
 - `events` (107 185 строк) — логи пользовательских событий за период.
-- `feedback` (1 104 строки) — обратная связь из всех каналов (NPS, app store reviews, support, in-app).
+- `feedback` (1 224 строки) — обратная связь из всех каналов (NPS, app store reviews, support, in-app).
 
 Подключение из Python:
 
@@ -60,10 +60,23 @@ Drop-off:
 
 Зависит от типа события. Распространённые ключи:
 
+- Для `onboarding_step_1_profile`: `persona` (`busy_professional` / `young_mom` / `student`), `fitness_level` (`beginner` / `intermediate` / `advanced`), `age_range` (`18-24` / `25-34` / `35-44` / `45+`), `gender` (`male` / `female`).
 - Для `workout_started`: `workout_type` (yoga/hiit/strength/cardio/meditation), `duration_minutes`, `intensity` (low/med/high).
 - Для `subscription_started`: `plan` (trial/monthly/annual), `price_usd`.
 - Для `onboarding_step_2_goals`: `goals` (array of: weight_loss, tone, flexibility, endurance).
 - Для `subscription_cancelled`: `reason` (price, motivation_lost, found_alternative, technical_issues, other).
+
+### Persona-приближение
+
+Persona каждого пользователя выводится из `onboarding_step_1_profile.properties.persona`. Distribution (PRODUCT_CONTEXT.md):
+
+| persona | Объём | Возраст | Triggers и боли |
+|---|---|---|---|
+| `busy_professional` | ~48% (~1455 users) | 25-44 | Утренние / вечерние слоты 20-40 мин, ценит гибкость и прогресс-трекинг |
+| `young_mom` | ~26% (~787 users) | 25-34, female | Дневной сон ребёнка 20-30 мин, постродовое состояние, нуждается в beginner-режиме |
+| `student` | ~25% (~758 users) | 18-24 | Между лекциями 15-25 мин, ограниченный бюджет, ценит trial |
+
+`fitness_level` (`beginner` / `intermediate` / `advanced`) — самооценка уровня, влияет на onboarding completion и retention.
 
 ## Таблица `feedback`
 
@@ -83,19 +96,21 @@ Drop-off:
 
 | channel | Кол-во | Семантика |
 |---|---|---|
+| `nps_survey` | 351 | Ответы на NPS-опросник в приложении |
 | `google_play_review` | 249 | Отзывы из Google Play |
-| `nps_survey` | 231 | Ответы на NPS-опросник в приложении |
 | `in_app_feedback` | 221 | Произвольная обратная связь через кнопку |
 | `app_store_review` | 209 | Отзывы из App Store |
 | `support_ticket` | 194 | Тикеты в поддержку |
 
-### NPS-семантика
+### NPS-семантика (5-балльная шкала)
 
-Для `channel = 'nps_survey'`:
-- `rating` 1–6 — детракторы
-- `rating` 7–8 — нейтралы
-- `rating` 9–10 — промоутеры
-- Текст в `text` — комментарий к оценке
+Для `channel = 'nps_survey'` используется адаптированная 5-балльная шкала:
+- `rating` ∈ {1, 2} — детракторы
+- `rating` ∈ {3, 4} — нейтралы (passives)
+- `rating` = 5 — промоутеры
+- `text` — комментарий к оценке (на русском)
+
+NPS-like score (формула): `100 × (count_promoters − count_detractors) / total`.
 
 ## Примеры запросов
 

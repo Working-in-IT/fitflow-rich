@@ -14,7 +14,7 @@ CREATE INDEX idx_events_user ON events(user_id);
 CREATE INDEX idx_events_name ON events(event_name);
 CREATE INDEX idx_events_timestamp ON events(event_timestamp);
 
--- feedback: 1104 отзыва за период данных (231 из них nps_survey)
+-- feedback: 1224 отзыва за период данных (351 из них nps_survey)
 CREATE TABLE feedback (
     feedback_id TEXT PRIMARY KEY,
     user_id TEXT,

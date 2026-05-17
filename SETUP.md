@@ -332,5 +332,5 @@ python3 .claude/skills/product-feedback/product_feedback_analysis.py --db data/f
 - 💳 **Anthropic Console (API-ключи):** [console.anthropic.com](https://console.anthropic.com)
 - 🐍 **Python:** [python.org/downloads](https://www.python.org/downloads/)
 - ⚡ **uv (менеджер пакетов):** [docs.astral.sh/uv](https://docs.astral.sh/uv/)
-- 📱 **Канал «Работая в айтишечке»:** [t.me/working_in_it](https://t.me/working_in_it)
+- 📱 **Канал «Работая в айтишечке»:** [t.me/workinginit](https://t.me/workinginit)
 - 💬 **Вопросы по подготовке:** в Telegram-канал или Podlodka ProductCrew Discord

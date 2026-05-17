@@ -6,6 +6,8 @@
 
 Чтобы работать руками во время эфира — пройди [**SETUP.md**](SETUP.md) **за день до воркшопа**. Там пошаговая инструкция: Python, git, VS Code, Claude Code, доступ к Claude и smoke test. Время на подготовку — 30–45 минут с нуля.
 
+> **📢 Обновление 2026-05-17:** датасет расширен и обогащён (добавлены persona-properties и больше NPS-отзывов). **Если ты уже клонировал репо — выполни `git pull`**. Если есть локальные изменения — сначала `git stash`. Smoke test прежний — пройдёт после обновления.
+
 ## Что внутри
 
 ```
@@ -15,7 +17,7 @@
 ├── BLUEPRINT.md               # current state, roadmap, recent decisions
 ├── KNOWLEDGE_LOG.md           # история продуктовых решений
 ├── data/
-│   ├── fitflow.db             # SQLite: 107K событий + 1.1K отзывов
+│   ├── fitflow.db             # SQLite: 107K событий + 1.2K отзывов (~350 nps_survey)
 │   ├── schema.sql             # CREATE TABLE statements
 │   └── README.md              # data dictionary
 ├── entities/                  # описания доменных сущностей
@@ -43,4 +45,4 @@ MIT — см. [LICENSE](LICENSE).
 
 - Оригинальные данные: [Working-in-IT/agentic-analytics-workshop](https://github.com/Working-in-IT/agentic-analytics-workshop)
 - Вдохновение для skill-pack: [nimrodfisher/data-analytics-skills](https://github.com/nimrodfisher/data-analytics-skills) (no LICENSE, используется с атрибуцией)
-- Автор: [Данила Шевцов](https://t.me/working_in_it) / Telegram-канал «Работая в айтишечке»
+- Автор: [Данила Шевцов](https://t.me/workinginit) / Telegram-канал «Работая в айтишечке»
