@@ -19,12 +19,12 @@ conn = sqlite3.connect("data/fitflow.db")
 
 | Колонка | Тип | Описание | Пример |
 |---|---|---|---|
-| `event_id` | TEXT (PK) | Уникальный ID события | `evt_a3f9b2c1` |
-| `user_id` | TEXT | ID пользователя | `usr_b7e4a8d2` |
+| `event_id` | INTEGER (PK) | Уникальный ID события | `66720` |
+| `user_id` | TEXT | ID пользователя, формат `U<5 цифр>` | `U00001` |
 | `event_name` | TEXT | Тип события — см. полный список ниже | `workout_started` |
-| `event_timestamp` | TIMESTAMP | UTC-время события | `2026-03-15 08:14:23` |
+| `event_timestamp` | TEXT | UTC-время в ISO-8601 (с `T` между датой и временем) | `2025-01-01T06:45:46` |
 | `platform` | TEXT | `ios` / `android` / `web` | `ios` |
-| `properties` | JSON | Доп. свойства события — см. секцию ниже | `{"workout_type": "yoga"}` |
+| `properties` | TEXT | JSON-строка с доп. свойствами — см. секцию ниже | `{"workout_type": "yoga"}` |
 
 ### Значения `event_name` (распределение)
 
@@ -63,7 +63,7 @@ Drop-off:
 - Для `onboarding_step_1_profile`: `persona` (`busy_professional` / `young_mom` / `student`), `fitness_level` (`beginner` / `intermediate` / `advanced`), `age_range` (`18-24` / `25-34` / `35-44` / `45+`), `gender` (`male` / `female`).
 - Для `workout_started`: `workout_type` (yoga/hiit/strength/cardio/meditation), `duration_minutes`, `intensity` (low/med/high).
 - Для `subscription_started`: `plan` (trial/monthly/annual), `price_usd`.
-- Для `onboarding_step_2_goals`: `goals` (array of: weight_loss, tone, flexibility, endurance).
+- Для `onboarding_step_2_goals`: `goal` (одна строка из набора: `weight_loss` / `tone` / `flexibility` / `endurance` / `general_fitness` / `gain_muscle`). Поле строковое, не массив — пользователь выбирает одну основную цель.
 - Для `subscription_cancelled`: `reason` (price, motivation_lost, found_alternative, technical_issues, other).
 
 ### Persona-приближение
@@ -82,15 +82,17 @@ Persona каждого пользователя выводится из `onboard
 
 Обратная связь из 5 каналов. Один пользователь может оставить несколько отзывов.
 
-| Колонка | Тип | Описание |
-|---|---|---|
-| `feedback_id` | TEXT (PK) | Уникальный ID отзыва |
-| `user_id` | TEXT | ID пользователя (может быть NULL для анонимных) |
-| `feedback_date` | DATE | Дата отзыва |
-| `channel` | TEXT | Канал — см. список |
-| `rating` | INTEGER | 1–5 (для рейтинговых каналов) или NULL |
-| `text` | TEXT | Текст отзыва (на русском) |
-| `platform` | TEXT | `ios` / `android` / `web` |
+| Колонка | Тип | Описание | Пример |
+|---|---|---|---|
+| `feedback_id` | INTEGER (PK) | Уникальный ID отзыва | `527` |
+| `user_id` | TEXT | ID пользователя формата `U<5 цифр>` (может быть NULL для анонимных) | `U00123` |
+| `feedback_date` | TEXT | Дата в ISO-формате `YYYY-MM-DD` | `2025-11-14` |
+| `channel` | TEXT | Канал — см. список ниже | `nps_survey` |
+| `rating` | INTEGER | 1–5 (для рейтинговых каналов) или NULL | `4` |
+| `text` | TEXT | Текст отзыва (на русском) | `«Похудела на 7 кг…»` |
+| `platform` | TEXT | `ios` / `android` / `web` | `ios` |
+
+> **Note (seed-отзывы):** часть `nps_survey` записей в `feedback_date` 2025-10 — 2025-12 имеет `feedback_id >= 1000000` — это синтетическое расширение датасета для воркшопа. Если для тебя важна чистая выборка — отфильтруй `feedback_id < 1000000`.
 
 ### Распределение по каналам
 
